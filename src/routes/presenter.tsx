@@ -16,6 +16,7 @@ function PresenterPage() {
   const navigate = useNavigate();
   const [participant, setParticipant] = useState<ReturnType<typeof loadParticipant>>(null);
   const [mounted, setMounted] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -93,7 +94,26 @@ function PresenterPage() {
       </div>
 
       {/* Presenter sidebar */}
-      <aside className="w-96 shrink-0 border-l border-border bg-white/80 backdrop-blur p-6 flex flex-col gap-5 overflow-y-auto">
+      <div className="flex shrink-0 border-l border-border">
+        <button
+          type="button"
+          onClick={() => setPanelOpen((open) => !open)}
+          aria-label={panelOpen ? "Recolher painel do apresentador" : "Expandir painel do apresentador"}
+          title={panelOpen ? "Recolher painel" : "Expandir painel"}
+          className="flex w-8 shrink-0 items-center justify-center self-stretch bg-white/80 hover:bg-muted transition-colors"
+        >
+          {panelOpen ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
+
+        <aside
+          className={[
+            "flex flex-col gap-5 overflow-y-auto overflow-x-hidden bg-white/80 backdrop-blur transition-[width,opacity,padding] duration-300 ease-in-out",
+            panelOpen ? "w-96 p-6 opacity-100" : "w-0 p-0 opacity-0 pointer-events-none",
+          ].join(" ")}
+          aria-hidden={!panelOpen}
+        >
+          {panelOpen && (
+            <>
         <div>
           <div className="text-xs uppercase tracking-widest text-primary">Painel do Apresentador</div>
           <h2 className="mt-1 text-lg font-semibold leading-tight">{session.title}</h2>
@@ -177,7 +197,10 @@ function PresenterPage() {
         >
           <LogOut className="h-3.5 w-3.5" /> Sair
         </button>
-      </aside>
+            </>
+          )}
+        </aside>
+      </div>
     </div>
   );
 }

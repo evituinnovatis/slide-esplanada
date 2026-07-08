@@ -2,6 +2,7 @@ import { SLIDES, VOTING_SLIDE_INDEX, RESULTS_SLIDE_INDEX, type Slide } from "@/l
 import { LAYOUT_OPTIONS, type LayoutOptionId } from "@/lib/presentation/layout-options";
 import { LayoutOptionCard } from "./LayoutOption";
 import { DataSourcesSlide } from "./slides/DataSourcesSlide";
+import { ProgressiveRevealSlide } from "./slides/ProgressiveRevealSlide";
 import type { VoteRow } from "@/lib/presentation/realtime";
 import { useMemo } from "react";
 import { Check, Trophy } from "lucide-react";
@@ -18,6 +19,7 @@ interface SlideRendererProps {
 // Slides that outgrew the generic content/bullets layout get a dedicated component here.
 const CUSTOM_CONTENT_SLIDES: Record<string, React.ComponentType<{ slide: Slide }>> = {
   dados: DataSourcesSlide,
+  "revelacao-progressiva": ProgressiveRevealSlide,
 };
 
 export function SlideRenderer(props: SlideRendererProps) {
@@ -44,11 +46,6 @@ export function SlideRenderer(props: SlideRendererProps) {
 export function SlideHeader({ slide }: { slide: Slide }) {
   return (
     <>
-      {slide.eyebrow && (
-        <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs uppercase tracking-widest text-primary mb-6">
-          {slide.eyebrow}
-        </div>
-      )}
       <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
         {slide.title}
       </h1>

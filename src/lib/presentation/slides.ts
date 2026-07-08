@@ -7,14 +7,12 @@ export interface Slide {
   subtitle?: string;
   bullets?: string[];
   message?: string;
-  eyebrow?: string;
 }
 
 export const SLIDES: Slide[] = [
   {
     id: "abertura",
     kind: "content",
-    eyebrow: "01 — Abertura",
     title: "Esplanada 4.0",
     subtitle:
       "A nova plataforma estratégica da Innovatis para visualizar estrutura institucional, orçamento, emendas e oportunidades no Governo Federal.",
@@ -22,7 +20,6 @@ export const SLIDES: Slide[] = [
   {
     id: "problema",
     kind: "content",
-    eyebrow: "02 — Problema atual",
     title: "Hoje, a informação pública existe, mas está fragmentada",
     message:
       "Dados sobre Ministérios, Secretarias, gestores, orçamento, emendas e projetos internos estão dispersos. Isso dificulta a leitura estratégica e aumenta o esforço operacional.",
@@ -37,7 +34,6 @@ export const SLIDES: Slide[] = [
   {
     id: "visao",
     kind: "content",
-    eyebrow: "03 — Visão da solução",
     title: "O Esplanada 4.0 centraliza a leitura estratégica do Governo Federal",
     message:
       "Plataforma web que organiza, conecta e apresenta dados institucionais, orçamentários e estratégicos em uma interface única.",
@@ -53,15 +49,20 @@ export const SLIDES: Slide[] = [
   {
     id: "dados",
     kind: "content",
-    eyebrow: "04 — Como os dados serão coletados",
     title: "Quatro fontes de dados independentes alimentam o ecossistema",
     message:
       "Cada fonte tem um propósito, um tipo de dado extraído e uma frequência de atualização diferente — dinâmica via API/lotes ou estática via carga manual/anual.",
   },
   {
+    id: "revelacao-progressiva",
+    kind: "content",
+    title: "Revelação Progressiva: do macro ao micro através de cliques",
+    message:
+      "O usuário parte da visão geral do Governo Federal e aprofunda a navegação por cliques, expandindo Ministérios, Secretarias e gestores conforme a necessidade.",
+  },
+  {
     id: "funcionalidades",
     kind: "content",
-    eyebrow: "05 — Funcionalidades",
     title: "Funcionalidades previstas para o Esplanada 4.0",
     message: "Exploração visual, busca e análise de dados institucionais e estratégicos.",
     bullets: [
@@ -76,7 +77,6 @@ export const SLIDES: Slide[] = [
   {
     id: "navegacao",
     kind: "content",
-    eyebrow: "06 — Experiência de navegação",
     title: "Como o usuário navegará pela plataforma",
     message: "Exploração visual por organograma, navegação progressiva e foco contextual.",
     bullets: [
@@ -91,14 +91,12 @@ export const SLIDES: Slide[] = [
   {
     id: "votacao",
     kind: "voting",
-    eyebrow: "07 — Interação",
     title: "Qual direção visual faz mais sentido para o Esplanada 4.0?",
     message: "Escolha o layout inicial que melhor representa a experiência estratégica.",
   },
   {
     id: "resultado",
     kind: "results",
-    eyebrow: "08 — Resultado da votação",
     title: "Resultado da escolha da plateia",
     message:
       "A escolha da plateia ajuda a direcionar a priorização visual do MVP e identifica qual experiência inicial parece mais clara para os usuários estratégicos.",
@@ -106,7 +104,6 @@ export const SLIDES: Slide[] = [
   {
     id: "roadmap",
     kind: "content",
-    eyebrow: "09 — Roadmap",
     title: "Roadmap de implantação do Esplanada 4.0",
     message: "MVP construído de forma incremental, começando pela estrutura institucional.",
     bullets: [
@@ -120,7 +117,6 @@ export const SLIDES: Slide[] = [
   {
     id: "arquitetura",
     kind: "content",
-    eyebrow: "10 — Arquitetura técnica",
     title: "Arquitetura planejada para o sistema final",
     message: "Stack web moderna, com separação entre front-end, back-end, banco, storage e ingestão.",
     bullets: [
@@ -135,7 +131,6 @@ export const SLIDES: Slide[] = [
   {
     id: "valor",
     kind: "content",
-    eyebrow: "11 — Valor estratégico",
     title: "O valor do Esplanada 4.0 para a Innovatis",
     message:
       "Reduz o esforço operacional, melhora a leitura institucional e transforma dados dispersos em inteligência estratégica.",
@@ -151,7 +146,6 @@ export const SLIDES: Slide[] = [
   {
     id: "encerramento",
     kind: "content",
-    eyebrow: "12 — Encerramento",
     title: "Esplanada 4.0",
     subtitle:
       "Uma plataforma para transformar estrutura institucional, orçamento, emendas e projetos em inteligência estratégica.",
