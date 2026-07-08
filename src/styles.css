@@ -1,0 +1,133 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-navy: var(--navy);
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Light, near-white background (matches PDF) */
+  --background: oklch(0.985 0.003 240);
+  --foreground: oklch(0.18 0.06 260);  /* deep navy text */
+
+  --navy: oklch(0.22 0.09 262);        /* Innovatis navy */
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.06 260);
+
+  --muted: oklch(0.955 0.006 240);
+  --muted-foreground: oklch(0.48 0.02 250);
+
+  /* Innovatis green */
+  --primary: oklch(0.68 0.17 150);
+  --primary-foreground: oklch(1 0 0);
+
+  --accent: oklch(0.68 0.17 150);
+  --accent-foreground: oklch(0.18 0.06 260);
+
+  --border: oklch(0.9 0.01 250);
+  --input: oklch(0.97 0.005 250);
+  --ring: oklch(0.68 0.17 150);
+
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.68 0.17 150);
+  --warning: oklch(0.75 0.17 65);
+  --danger: oklch(0.6 0.22 25);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--navy);
+    letter-spacing: -0.025em;
+  }
+}
+
+@utility text-navy {
+  color: var(--navy);
+}
+
+@utility bg-navy {
+  background-color: var(--navy);
+}
+
+@utility border-navy {
+  border-color: var(--navy);
+}
+
+@utility glass-card {
+  background: oklch(1 0 0 / 0.7);
+  border: 1px solid oklch(0.22 0.09 262 / 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+}
+
+@utility surface-panel {
+  background: oklch(1 0 0);
+  border: 1px solid oklch(0.22 0.09 262 / 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 2px oklch(0.22 0.09 262 / 0.04), 0 8px 24px -12px oklch(0.22 0.09 262 / 0.08);
+}
+
+@utility green-glow {
+  box-shadow: 0 0 0 2px oklch(0.68 0.17 150 / 0.35), 0 12px 40px -12px oklch(0.68 0.17 150 / 0.35);
+}
+
+@utility bg-app-gradient {
+  background-color: oklch(0.985 0.003 240);
+  background-image:
+    radial-gradient(ellipse 60% 50% at 100% 0%, oklch(0.68 0.17 150 / 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 0% 100%, oklch(0.22 0.09 262 / 0.05), transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'><g fill='none' stroke='%230A1F44' stroke-opacity='0.09' stroke-width='0.6'><path d='M120 80 L340 180 L520 60 L680 220 L760 120'/><path d='M60 320 L220 260 L380 400 L560 320 L720 460'/><path d='M100 540 L280 460 L440 560 L620 500 L780 580'/><path d='M340 180 L380 400'/><path d='M520 60 L560 320'/><path d='M680 220 L720 460'/><path d='M220 260 L280 460'/></g><g fill='%230A1F44' fill-opacity='0.18'><circle cx='120' cy='80' r='2.5'/><circle cx='340' cy='180' r='2.5'/><circle cx='680' cy='220' r='2.5'/><circle cx='60' cy='320' r='2.5'/><circle cx='380' cy='400' r='2.5'/><circle cx='560' cy='320' r='2.5'/><circle cx='100' cy='540' r='2.5'/><circle cx='440' cy='560' r='2.5'/><circle cx='780' cy='580' r='2.5'/></g><g><circle cx='520' cy='60' r='3.5' fill='%2322C55E'/><circle cx='720' cy='460' r='3.5' fill='%23F59E0B'/><circle cx='280' cy='460' r='3.5' fill='%23EF4444'/><circle cx='760' cy='120' r='3' fill='%2322C55E'/><circle cx='220' cy='260' r='3' fill='%23F59E0B'/></g></svg>");
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: auto, auto, 900px 700px;
+  background-position: top right, bottom left, top right;
+}
+
+@keyframes slide-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-slide-in {
+  animation: slide-fade-in 0.5s ease-out;
+}
