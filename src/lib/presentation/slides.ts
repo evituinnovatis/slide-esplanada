@@ -41,8 +41,8 @@ export const SLIDES: SlideDef[] = [
   { id: "navegacao", kind: "content", Component: NavigationSlide },
   { id: "votacao", kind: "voting", Component: VotingSlide },
   { id: "resultado", kind: "results", Component: ResultsSlide },
-  { id: "roadmap", kind: "content", Component: RoadmapSlide },
   { id: "arquitetura", kind: "content", Component: ArchitectureSlide },
+  { id: "roadmap", kind: "content", Component: RoadmapSlide },
   { id: "cronograma", kind: "content", Component: CronogramaSlide },
   { id: "encerramento", kind: "content", Component: ClosingSlide },
 ];
