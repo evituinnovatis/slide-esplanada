@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { loadParticipant, clearParticipant } from "@/lib/presentation/auth";
 import { useSession, useVotes, useViewerCount } from "@/lib/presentation/realtime";
 import { updateSession } from "@/lib/presentation/session";
@@ -42,21 +42,50 @@ function PresenterPage() {
     return { total, per, winnerId: total > 0 ? sorted[0].id : null };
   }, [votes]);
 
+  const idx = session?.current_slide_index ?? 0;
+  const total = SLIDES.length;
+  const sessionId = session?.id;
+
+  const prev = useCallback(async () => {
+    if (!sessionId || idx <= 0) return;
+    await updateSession(sessionId, { current_slide_index: idx - 1 });
+  }, [sessionId, idx]);
+
+  const next = useCallback(async () => {
+    if (!sessionId || idx >= total - 1) return;
+    await updateSession(sessionId, { current_slide_index: idx + 1 });
+  }, [sessionId, idx, total]);
+
+  useEffect(() => {
+    if (!mounted || !participant || !session) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      const isTyping =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable);
+
+      if (isTyping) return;
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        void next();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        void prev();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mounted, participant, session, prev, next]);
+
   if (!mounted || !participant || !session) {
     return <div className="min-h-screen bg-app-gradient flex items-center justify-center text-muted-foreground">Carregando...</div>;
   }
 
-  const idx = session.current_slide_index;
-  const total = SLIDES.length;
-
-  async function prev() {
-    if (idx <= 0) return;
-    await updateSession(session!.id, { current_slide_index: idx - 1 });
-  }
-  async function next() {
-    if (idx >= total - 1) return;
-    await updateSession(session!.id, { current_slide_index: idx + 1 });
-  }
   async function openVoting() {
     await updateSession(session!.id, { voting_open: true, active_interaction_id: "layout_vote" });
   }
