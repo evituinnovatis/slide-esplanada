@@ -1,15 +1,17 @@
-import type { Slide } from "@/lib/presentation/slides";
-import { SlideHeader } from "../SlideRenderer";
+import { SlideTitle, SlideMessage, Accent } from "./primitives";
 
 const HIERARCHY_TREE_IMAGE = "/elementos_slides/arvore_hierarquica.webp";
 
-export function ProgressiveRevealSlide({ slide }: { slide: Slide }) {
+export function ProgressiveRevealSlide() {
   return (
     <div>
-      <SlideHeader slide={slide} />
-      {slide.message && (
-        <p className="mt-6 text-lg text-foreground/80 max-w-3xl">{slide.message}</p>
-      )}
+      <SlideTitle>
+        Revelação Progressiva: do <Accent>macro ao micro</Accent> através de cliques
+      </SlideTitle>
+      <SlideMessage>
+        O usuário parte da visão geral do Governo Federal e aprofunda a navegação por cliques,
+        expandindo Ministérios, Secretarias e gestores conforme a necessidade.
+      </SlideMessage>
 
       <div className="mt-10 surface-panel p-4 md:p-6 flex items-center justify-center">
         <img

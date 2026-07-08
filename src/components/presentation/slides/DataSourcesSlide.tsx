@@ -1,6 +1,5 @@
-import type { Slide } from "@/lib/presentation/slides";
-import { SlideHeader } from "../SlideRenderer";
-import { Landmark, Wallet, FileSpreadsheet, PieChart, type LucideIcon } from "lucide-react";
+import { SlideTitle, SlideMessage, Accent } from "./primitives";
+import { Landmark, Wallet, FileSpreadsheet, PieChart, Users, type LucideIcon } from "lucide-react";
 
 interface DataSource {
   name: string;
@@ -22,6 +21,17 @@ const DATA_SOURCES: DataSource[] = [
     oQueE: "API Estrutural",
     proposito: "Como está organizada a estrutura?",
     dadosExtraidos: "Cargos e Hierarquia",
+    natureza: "Dinâmico",
+    naturezaDetail: "API",
+    dinamico: true,
+  },
+  {
+    name: "Portal da Transparência",
+    tag: "(Governo)",
+    icon: Users,
+    oQueE: "API de Transparência",
+    proposito: "Quem ocupa os cargos?",
+    dadosExtraidos: "Nomes dos Gestores",
     natureza: "Dinâmico",
     naturezaDetail: "API",
     dinamico: true,
@@ -74,13 +84,16 @@ function NaturezaBadge({ source }: { source: DataSource }) {
   );
 }
 
-export function DataSourcesSlide({ slide }: { slide: Slide }) {
+export function DataSourcesSlide() {
   return (
     <div>
-      <SlideHeader slide={slide} />
-      {slide.message && (
-        <p className="mt-6 text-lg text-foreground/80 max-w-3xl">{slide.message}</p>
-      )}
+      <SlideTitle>
+        <Accent>Cinco fontes de dados</Accent> independentes alimentam o ecossistema
+      </SlideTitle>
+      <SlideMessage>
+        Cada fonte tem um propósito, um tipo de dado extraído e uma frequência de atualização
+        diferente — dinâmica via API/lotes ou estática via carga manual/anual.
+      </SlideMessage>
 
       {/* Desktop / tablet: table layout */}
       <div className="mt-10 hidden md:block surface-panel overflow-hidden">

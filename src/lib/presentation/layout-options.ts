@@ -1,8 +1,24 @@
 export const LAYOUT_OPTIONS = [
-  { id: "dashboard_executivo", title: "Dashboard Executivo", description: "Indicadores principais, visão gerencial, números consolidados e atalhos estratégicos." },
-  { id: "organograma_interativo", title: "Organograma Interativo", description: "Estrutura hierárquica com Presidência, Ministérios, Secretarias e gestores em destaque." },
-  { id: "busca_global", title: "Busca Global", description: "Busca centralizada para órgãos, gestores, projetos, emendas e orçamento." },
-  { id: "painel_analitico", title: "Painel Analítico", description: "Gráficos, ranking de oportunidades, orçamento, emendas e indicadores estratégicos." },
+  {
+    id: "dashboard_executivo",
+    title: "Referência 1",
+    image: "/elementos_slides/ARVORE_ORGANOGRAMA_EXEMPLO_4.png",
+  },
+  {
+    id: "organograma_interativo",
+    title: "Referência 2",
+    image: "/elementos_slides/ARVORE_ORGANOGRAMA_EXEMPLO_6.png",
+  },
+  {
+    id: "busca_global",
+    title: "Referência 3",
+    image: "/elementos_slides/ARVORE_ORGANOGRAMA_EXEMPLO_12.png",
+  },
+  {
+    id: "painel_analitico",
+    title: "Referência 4",
+    image: "/elementos_slides/ARVORE_ORGANOGRAMA_EXEMPLO_14.png",
+  },
 ] as const;
 
 export type LayoutOptionId = typeof LAYOUT_OPTIONS[number]["id"];
