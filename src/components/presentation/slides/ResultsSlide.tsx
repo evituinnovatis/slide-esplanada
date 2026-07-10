@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { LAYOUT_OPTIONS } from "@/lib/presentation/layout-options";
 import { Trophy } from "lucide-react";
-import { SlideTitle, SlideMessage } from "./primitives";
+import { SlideTitle, SlideMessage, Accent } from "./primitives";
 import type { SlideComponentProps } from "./types";
 
 export function ResultsSlide({ votes }: SlideComponentProps) {
@@ -16,11 +16,7 @@ export function ResultsSlide({ votes }: SlideComponentProps) {
 
   return (
     <div>
-      <SlideTitle>Resultado da escolha da plateia</SlideTitle>
-      <SlideMessage tone="muted">
-        A escolha da plateia ajuda a direcionar a priorização visual do MVP e identifica qual
-        experiência inicial parece mais clara para os usuários estratégicos.
-      </SlideMessage>
+      <SlideTitle>Resultado da <Accent>votação da plateia</Accent></SlideTitle>
 
       <div className="mt-8 grid md:grid-cols-3 gap-4 mb-8">
         <div className="surface-panel p-5">

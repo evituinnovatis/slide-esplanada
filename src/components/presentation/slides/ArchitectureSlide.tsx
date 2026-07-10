@@ -1,17 +1,14 @@
-import { SlideTitle, SlideMessage, BulletGrid } from "./primitives";
+import { SlideTitle, SlideMessage, BulletGrid, Accent } from "./primitives";
 
 export function ArchitectureSlide() {
   return (
     <div>
-      <SlideTitle>Arquitetura planejada para o sistema final</SlideTitle>
-      <SlideMessage>
-        Stack web moderna, com separação entre front-end, back-end, banco, storage e ingestão.
-      </SlideMessage>
+      <SlideTitle><Accent>Arquitetura planejada</Accent> para o sistema final</SlideTitle>
       <BulletGrid
         bullets={[
           "Front-end: Next.js + React + TypeScript",
           "Organograma: React Flow",
-          "Back-end: Spring Boot",
+          "Back-end: Python + FastAPI",
           "Banco: Amazon RDS PostgreSQL",
           "Armazenamento: Amazon S3",
           "Ingestão: GitHub Actions",

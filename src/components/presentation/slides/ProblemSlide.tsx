@@ -18,13 +18,14 @@ const SCATTERED_SOURCES: ScatteredSource[] = [
 const IMPACTS = [
   { value: "5", label: "fontes de dados que não se conversam" },
   { value: "0", label: "visão unificada de líderes e Secretarias" },
-  { value: "100%", label: "manual preciando cruzar informações de forma demorada" },
+  { value: "100%", label: "manual precisando cruzar informações de forma demorada" },
 ];
 
 export function ProblemSlide() {
   return (
     <div>
-      <SlideTitle>Hoje, a informação pública existe, mas está fragmentada</SlideTitle>
+      <SlideTitle>Hoje, a informação pública existe, mas está  
+        <Accent> fragmentada</Accent></SlideTitle>
       <SlideMessage>
         Dados sobre Ministérios, Secretarias, gestores, orçamento, emendas e projetos internos vivem em{" "}
         <Accent>silos que não conversam entre si</Accent>, exigindo garimpo manual a cada consulta.
@@ -49,7 +50,7 @@ export function ProblemSlide() {
         </div>
         <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-warning">
           <Unlink className="h-4 w-4" />
-          Nenhuma fonte se conecta às demais de forma unificada
+          Essas fontes não se conectam às demais de forma unificada
         </div>
       </div>
 

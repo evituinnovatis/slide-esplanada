@@ -1,9 +1,9 @@
-import { SlideTitle, SlideMessage, BulletGrid } from "./primitives";
+import { SlideTitle, SlideMessage, BulletGrid, Accent } from "./primitives";
 
 export function NavigationSlide() {
   return (
     <div>
-      <SlideTitle>Como o usuário navegará pela plataforma</SlideTitle>
+      <SlideTitle>Como o usuário <Accent>navegará pela plataforma</Accent></SlideTitle>
       <SlideMessage>
         Exploração visual por organograma, navegação progressiva e foco contextual.
       </SlideMessage>

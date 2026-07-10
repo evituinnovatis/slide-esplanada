@@ -505,8 +505,8 @@ export function OrgTreeSlide() {
         Experimente: <Accent>clique nos nós</Accent> para expandir e recolher a árvore
       </SlideTitle>
       <SlideMessage tone="muted">
-        Uma prévia interativa do organograma do Esplanada 4.0. Clique na Presidência para revelar
-        os Ministérios e em cada Ministério para revelar suas Secretarias.
+        Uma prévia interativa do organograma do <Accent>Esplanada 4.0</Accent>. Clique na Presidência para revelar
+        os <Accent>Ministérios</Accent> e em cada Ministério para revelar suas <Accent>Secretarias</Accent>.
       </SlideMessage>
 
       <div className="mt-6 surface-panel overflow-hidden">

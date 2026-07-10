@@ -91,8 +91,8 @@ export function DataSourcesSlide() {
         <Accent>Cinco fontes de dados</Accent> independentes alimentam o ecossistema
       </SlideTitle>
       <SlideMessage>
-        Cada fonte tem um propósito, um tipo de dado extraído e uma frequência de atualização
-        diferente — dinâmica via API/lotes ou estática via carga manual/anual.
+        Cada fonte tem um propósito, um tipo de <Accent>dado extraído</Accent> e uma <Accent>frequência de atualização </Accent>
+        diferente dinâmica via <Accent>API/lotes</Accent> ou estática <Accent>via carga manual/anual</Accent>.
       </SlideMessage>
 
       {/* Desktop / tablet: table layout */}
