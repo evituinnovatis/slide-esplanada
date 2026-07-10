@@ -367,7 +367,7 @@ function Toolbar({
 }
 
 function OrgTree() {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set(["president"]));
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const { fitView } = useReactFlow();
 
   const toggleNode = useCallback((nodeId: string) => {
