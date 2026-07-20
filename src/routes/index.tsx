@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getOrCreateDefaultSession } from "@/lib/presentation/session";
-import { PRESENTER_PASSWORD, saveParticipant } from "@/lib/presentation/auth";
-import { Presentation, Users, ArrowRight, Lock } from "lucide-react";
+import { saveParticipant, signInPresenter } from "@/lib/presentation/auth";
+import { Presentation, Users, ArrowRight, Lock, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: LoginPage,
@@ -13,6 +13,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<null | "presenter" | "viewer">(null);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,32 +21,58 @@ function LoginPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (!name.trim()) { setError("Informe seu nome."); return; }
-    if (mode === "presenter" && password !== PRESENTER_PASSWORD) {
-      setError("Senha incorreta.");
-      return;
-    }
     setLoading(true);
+
     try {
+      if (mode === "presenter") {
+        if (!email.trim()) {
+          setError("Informe seu e-mail.");
+          return;
+        }
+        if (!password) {
+          setError("Informe sua senha.");
+          return;
+        }
+
+        await signInPresenter(email.trim(), password);
+        navigate({ to: "/presenter" });
+        return;
+      }
+
+      if (!name.trim()) {
+        setError("Informe seu nome.");
+        return;
+      }
+
       const session = await getOrCreateDefaultSession();
       const { data, error: insErr } = await supabase
         .from("participants")
-        .insert({ session_id: session.id, name: name.trim(), role: mode! })
+        .insert({ session_id: session.id, name: name.trim(), role: "viewer" })
         .select("*")
         .single();
       if (insErr) throw insErr;
+
       saveParticipant({
         id: data.id,
         name: data.name,
-        role: data.role as "presenter" | "viewer",
+        role: "viewer",
         sessionId: session.id,
       });
-      navigate({ to: mode === "presenter" ? "/presenter" : "/viewer" });
-    } catch (err: any) {
-      setError(err?.message ?? "Erro ao entrar.");
+      navigate({ to: "/viewer" });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erro ao entrar.";
+      setError(message);
     } finally {
       setLoading(false);
     }
+  }
+
+  function resetForm() {
+    setMode(null);
+    setError(null);
+    setPassword("");
+    setEmail("");
+    setName("");
   }
 
   return (
@@ -108,27 +135,43 @@ function LoginPage() {
               </h2>
             </div>
 
-            <label className="block text-sm text-muted-foreground mb-2">Seu nome</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nome completo"
-              className="w-full rounded-md bg-input border border-border px-4 py-3 outline-none focus:border-primary transition"
-              autoFocus
-            />
-
-            {mode === "presenter" && (
+            {mode === "presenter" ? (
               <>
+                <label className="block text-sm text-muted-foreground mb-2">
+                  <Mail className="inline h-3 w-3 mr-1" /> E-mail
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="tech@innovatismc.com"
+                  autoComplete="email"
+                  className="w-full rounded-md bg-input border border-border px-4 py-3 outline-none focus:border-primary transition"
+                  autoFocus
+                />
+
                 <label className="block text-sm text-muted-foreground mb-2 mt-4">
-                  <Lock className="inline h-3 w-3 mr-1" /> Senha do apresentador
+                  <Lock className="inline h-3 w-3 mr-1" /> Senha
                 </label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Senha"
+                  autoComplete="current-password"
                   className="w-full rounded-md bg-input border border-border px-4 py-3 outline-none focus:border-primary transition"
+                />
+              </>
+            ) : (
+              <>
+                <label className="block text-sm text-muted-foreground mb-2">Seu nome</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Nome completo"
+                  className="w-full rounded-md bg-input border border-border px-4 py-3 outline-none focus:border-primary transition"
+                  autoFocus
                 />
               </>
             )}
@@ -140,7 +183,7 @@ function LoginPage() {
             <div className="mt-6 flex gap-3">
               <button
                 type="button"
-                onClick={() => { setMode(null); setError(null); setPassword(""); }}
+                onClick={resetForm}
                 className="rounded-md border border-border px-4 py-3 text-sm hover:bg-muted transition"
               >
                 Voltar

@@ -1,12 +1,20 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { loadParticipant, clearParticipant } from "@/lib/presentation/auth";
+import type { User } from "@supabase/supabase-js";
+import {
+  clearParticipant,
+  getAuthUser,
+  isPresenterUser,
+  signOutAuth,
+} from "@/lib/presentation/auth";
+import { getOrCreateDefaultSession } from "@/lib/presentation/session";
 import { useSession, useVotes, useViewerCount } from "@/lib/presentation/realtime";
 import { updateSession } from "@/lib/presentation/session";
+import { clearAllVotes } from "@/lib/presentation/voting";
 import { SLIDES, VOTING_SLIDE_INDEX } from "@/lib/presentation/slides";
 import { LAYOUT_OPTIONS } from "@/lib/presentation/layout-options";
 import { SlideRenderer } from "@/components/presentation/SlideRenderer";
-import { ChevronLeft, ChevronRight, LogOut, Users, Vote, PlayCircle, StopCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut, Users, Vote, PlayCircle, StopCircle, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/presenter")({
   component: PresenterPage,
@@ -14,23 +22,37 @@ export const Route = createFileRoute("/presenter")({
 
 function PresenterPage() {
   const navigate = useNavigate();
-  const [participant, setParticipant] = useState<ReturnType<typeof loadParticipant>>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   const [panelOpen, setPanelOpen] = useState(true);
+  const [clearingVotes, setClearingVotes] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const p = loadParticipant();
-    if (!p || p.role !== "presenter") {
-      navigate({ to: "/" });
-      return;
+
+    async function guardPresenterAccess() {
+      try {
+        const authUser = await getAuthUser();
+        if (!isPresenterUser(authUser)) {
+          navigate({ to: "/" });
+          return;
+        }
+
+        setUser(authUser);
+        const session = await getOrCreateDefaultSession();
+        setSessionId(session.id);
+      } catch {
+        navigate({ to: "/" });
+      }
     }
-    setParticipant(p);
+
+    void guardPresenterAccess();
   }, [navigate]);
 
-  const session = useSession(participant?.sessionId ?? null);
-  const votes = useVotes(participant?.sessionId ?? null);
-  const viewerCount = useViewerCount(participant?.sessionId ?? null);
+  const session = useSession(sessionId);
+  const votes = useVotes(sessionId);
+  const viewerCount = useViewerCount(sessionId);
 
   const results = useMemo(() => {
     const total = votes.length;
@@ -44,7 +66,6 @@ function PresenterPage() {
 
   const idx = session?.current_slide_index ?? 0;
   const total = SLIDES.length;
-  const sessionId = session?.id;
 
   const prev = useCallback(async () => {
     if (!sessionId || idx <= 0) return;
@@ -57,7 +78,7 @@ function PresenterPage() {
   }, [sessionId, idx, total]);
 
   useEffect(() => {
-    if (!mounted || !participant || !session) return;
+    if (!mounted || !user || !session) return;
 
     function handleKeyDown(event: KeyboardEvent) {
       const target = event.target as HTMLElement | null;
@@ -80,19 +101,42 @@ function PresenterPage() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mounted, participant, session, prev, next]);
+  }, [mounted, user, session, prev, next]);
 
-  if (!mounted || !participant || !session) {
+  if (!mounted || !user || !sessionId || !session) {
     return <div className="min-h-screen bg-app-gradient flex items-center justify-center text-muted-foreground">Carregando...</div>;
   }
 
+  const activeSession = session;
+
   async function openVoting() {
-    await updateSession(session!.id, { voting_open: true, active_interaction_id: "layout_vote" });
+    await updateSession(activeSession.id, { voting_open: true, active_interaction_id: "layout_vote" });
   }
   async function closeVoting() {
-    await updateSession(session!.id, { voting_open: false });
+    await updateSession(activeSession.id, { voting_open: false });
   }
-  function logout() {
+  async function handleClearVotes() {
+    if (
+      !window.confirm(
+        "Limpar todos os votos do banco de dados? Esta ação não pode ser desfeita.",
+      )
+    ) {
+      return;
+    }
+    setClearingVotes(true);
+    try {
+      const deletedCount = await clearAllVotes(activeSession.id);
+      console.log(`${deletedCount} votos removidos`);
+    } catch (err: unknown) {
+      console.error("Erro ao limpar votos:", err);
+      const message = err instanceof Error ? err.message : "Erro ao limpar votos.";
+      window.alert(message);
+    } finally {
+      setClearingVotes(false);
+    }
+  }
+  async function logout() {
+    await signOutAuth();
     clearParticipant();
     navigate({ to: "/" });
   }
@@ -115,7 +159,7 @@ function PresenterPage() {
         <div className="flex-1 flex items-center">
           <SlideRenderer
             slideIndex={idx}
-            votingOpen={session.voting_open}
+            votingOpen={activeSession.voting_open}
             votes={votes}
             viewMode="presenter"
           />
@@ -145,15 +189,15 @@ function PresenterPage() {
             <>
         <div>
           <div className="text-xs uppercase tracking-widest text-primary">Painel do Apresentador</div>
-          <h2 className="mt-1 text-lg font-semibold leading-tight">{session.title}</h2>
-          <p className="text-sm text-muted-foreground mt-1">{participant.name}</p>
+          <h2 className="mt-1 text-lg font-semibold leading-tight">{activeSession.title}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{user.email}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
           <Metric label="Slide" value={`${idx + 1}/${total}`} />
           <Metric label="Espectadores" value={String(viewerCount)} icon={<Users className="h-3.5 w-3.5" />} />
           <Metric label="Votos" value={String(results.total)} icon={<Vote className="h-3.5 w-3.5" />} />
-          <Metric label="Votação" value={session.voting_open ? "Aberta" : "Fechada"} accent={session.voting_open} />
+          <Metric label="Votação" value={activeSession.voting_open ? "Aberta" : "Fechada"} accent={activeSession.voting_open} />
         </div>
 
         <div className="grid grid-cols-2 gap-2">
@@ -176,19 +220,29 @@ function PresenterPage() {
         <div className="grid grid-cols-2 gap-2">
           <button
             onClick={openVoting}
-            disabled={session.voting_open}
+            disabled={activeSession.voting_open}
             className="flex items-center justify-center gap-1 rounded-md border border-primary/40 bg-primary/10 text-primary px-3 py-2.5 text-sm hover:bg-primary/20 disabled:opacity-40"
           >
             <PlayCircle className="h-4 w-4" /> Abrir votação
           </button>
           <button
             onClick={closeVoting}
-            disabled={!session.voting_open}
+            disabled={!activeSession.voting_open}
             className="flex items-center justify-center gap-1 rounded-md border border-border bg-muted/40 px-3 py-2.5 text-sm hover:bg-muted disabled:opacity-40"
           >
             <StopCircle className="h-4 w-4" /> Fechar votação
           </button>
         </div>
+
+        <button
+          type="button"
+          onClick={handleClearVotes}
+          disabled={clearingVotes}
+          className="flex w-full items-center justify-center gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive hover:bg-destructive/10 disabled:opacity-40"
+        >
+          <Trash2 className="h-4 w-4" />
+          {clearingVotes ? "Limpando votos..." : "Limpar todos os votos"}
+        </button>
 
         {idx === VOTING_SLIDE_INDEX && (
           <div className="rounded-md bg-primary/10 border border-primary/30 p-3 text-xs text-primary">
@@ -221,7 +275,7 @@ function PresenterPage() {
         </div>
 
         <button
-          onClick={logout}
+          onClick={() => void logout()}
           className="mt-auto flex items-center justify-center gap-2 rounded-md border border-border px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted"
         >
           <LogOut className="h-3.5 w-3.5" /> Sair
