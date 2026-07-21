@@ -12,7 +12,8 @@ BEGIN
     RAISE EXCEPTION 'Acesso negado: apenas apresentadores podem limpar votos';
   END IF;
 
-  DELETE FROM public.layout_votes;
+  DELETE FROM public.layout_votes
+  WHERE id IS NOT NULL;
   GET DIAGNOSTICS deleted_count = ROW_COUNT;
   RETURN deleted_count;
 END;

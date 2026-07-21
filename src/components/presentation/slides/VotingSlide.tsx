@@ -1,8 +1,19 @@
+import { useState } from "react";
 import { LAYOUT_OPTIONS, type LayoutOptionId } from "@/lib/presentation/layout-options";
 import { LayoutOptionCard } from "../LayoutOption";
 import { Check } from "lucide-react";
 import { SlideTitle, SlideMessage, Accent } from "./primitives";
 import type { SlideComponentProps } from "./types";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export function VotingSlide({
   votingOpen,
@@ -11,6 +22,32 @@ export function VotingSlide({
   onVote,
   votes,
 }: SlideComponentProps) {
+  const [pendingOptionId, setPendingOptionId] = useState<LayoutOptionId | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const canVote = viewMode === "viewer" && votingOpen && !myVoteOptionId;
+  const pendingOption = pendingOptionId
+    ? LAYOUT_OPTIONS.find((o) => o.id === pendingOptionId)
+    : null;
+
+  function handleOptionClick(optionId: LayoutOptionId) {
+    if (!canVote) return;
+    setPendingOptionId(optionId);
+    setConfirmOpen(true);
+  }
+
+  function handleConfirmVote() {
+    if (!pendingOptionId || !onVote) return;
+    onVote(pendingOptionId);
+    setConfirmOpen(false);
+    setPendingOptionId(null);
+  }
+
+  function handleDialogOpenChange(open: boolean) {
+    setConfirmOpen(open);
+    if (!open) setPendingOptionId(null);
+  }
+
   return (
     <div>
       <SlideTitle>
@@ -43,7 +80,7 @@ export function VotingSlide({
               id={o.id}
               selected={myVoteOptionId === o.id}
               disabled={viewMode === "presenter" || !!myVoteOptionId || !votingOpen}
-              onClick={() => onVote?.(o.id as LayoutOptionId)}
+              onClick={() => handleOptionClick(o.id)}
             />
           ))}
         </div>
@@ -56,6 +93,23 @@ export function VotingSlide({
             : "Abra a votação no painel lateral para permitir que os espectadores votem."}
         </p>
       )}
+
+      <AlertDialog open={confirmOpen} onOpenChange={handleDialogOpenChange}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar voto</AlertDialogTitle>
+            <AlertDialogDescription>
+              Você selecionou{" "}
+              <span className="font-semibold text-foreground">{pendingOption?.title}</span>.
+              Após confirmar, não será possível alterar seu voto. Deseja continuar?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmVote}>Confirmar voto</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
