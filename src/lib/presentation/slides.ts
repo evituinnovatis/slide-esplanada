@@ -7,14 +7,14 @@ import { DataSourcesSlide } from "@/components/presentation/slides/DataSourcesSl
 import { ProgressiveRevealSlide } from "@/components/presentation/slides/ProgressiveRevealSlide";
 import { ValueSynthesisSlide } from "@/components/presentation/slides/ValueSynthesisSlide";
 import { OrgTreeSlide } from "@/components/presentation/slides/OrgTreeSlide";
+import { MinistryPortfolioSlide } from "@/components/presentation/slides/MinistryPortfolioSlide";
 import { FeaturesSlide } from "@/components/presentation/slides/FeaturesSlide";
 import { NavigationSlide } from "@/components/presentation/slides/NavigationSlide";
 import { VotingSlide } from "@/components/presentation/slides/VotingSlide";
 import { ResultsSlide } from "@/components/presentation/slides/ResultsSlide";
-import { RoadmapSlide } from "@/components/presentation/slides/RoadmapSlide";
 import { ArchitectureSlide } from "@/components/presentation/slides/ArchitectureSlide";
-import { CronogramaSlide } from "@/components/presentation/slides/CronogramaSlide";
 import { ClosingSlide } from "@/components/presentation/slides/ClosingSlide";
+import { NextIntegrationsSlide } from "@/components/presentation/slides/NextIntegrationsSlide";
 
 export type SlideKind = "content" | "voting" | "results";
 
@@ -33,17 +33,11 @@ export const SLIDES: SlideDef[] = [
   { id: "abertura", kind: "content", Component: OpeningSlide },
   { id: "problema", kind: "content", Component: ProblemSlide },
   { id: "visao", kind: "content", Component: VisionSlide },
-  { id: "dados", kind: "content", Component: DataSourcesSlide },
   { id: "revelacao-progressiva", kind: "content", Component: ProgressiveRevealSlide },
   { id: "sintese-valor", kind: "content", Component: ValueSynthesisSlide },
-  { id: "organograma-interativo", kind: "content", Component: OrgTreeSlide },
-  { id: "funcionalidades", kind: "content", Component: FeaturesSlide },
-  { id: "navegacao", kind: "content", Component: NavigationSlide },
-  { id: "votacao", kind: "voting", Component: VotingSlide },
-  { id: "resultado", kind: "results", Component: ResultsSlide },
-  { id: "arquitetura", kind: "content", Component: ArchitectureSlide },
-  { id: "roadmap", kind: "content", Component: RoadmapSlide },
-  { id: "cronograma", kind: "content", Component: CronogramaSlide },
+  { id: "proximas-integracoes", kind: "content", Component: NextIntegrationsSlide },
+  /*{ id: "organograma-interativo", kind: "content", Component: OrgTreeSlide },*/
+  /*{ id: "visao-por-ministerio", kind: "content", Component: MinistryPortfolioSlide },*/
   { id: "encerramento", kind: "content", Component: ClosingSlide },
 ];
 
