@@ -1,46 +1,78 @@
-import { CheckCircle2, FileBarChart } from "lucide-react";
-import { SlideTitle, SlideMessage, Accent } from "./primitives";
+import { BriefcaseBusiness, UserRound, WalletCards } from "lucide-react";
+import { Accent, SlideMessage, SlideTitle } from "./primitives";
 
-const TREE_DETAIL_IMAGE = "/elementos_slides/arvore-painel.png";
+const DETAIL_IMAGES = [
+  {
+    src: "/elementos_slides/painel-detalhes.jpeg",
+    alt: "Painel com gestor, cargo e indicadores do órgão",
+    label: "Gestor e indicadores",
+  },
+  {
+    src: "/elementos_slides/painel-detalhes2.jpeg",
+    alt: "Painel com a lista de projetos vinculados ao órgão",
+    label: "Projetos vinculados",
+  },
+] as const;
+
+const HIGHLIGHTS = [
+  { icon: UserRound, label: "Quem lidera" },
+  { icon: BriefcaseBusiness, label: "Onde atuamos" },
+  { icon: WalletCards, label: "Qual o orçamento" },
+] as const;
 
 export function ValueSynthesisSlide() {
   return (
     <div>
       <SlideTitle>
-        A síntese do valor: inteligência <Accent>consolidada em um único nó</Accent>
+        Cada órgão ganha um <Accent>painel de contexto</Accent>
       </SlideTitle>
-      <SlideMessage tone="muted">
-        Cada clique na árvore abre um painel completo com dados do órgão: projetos, emendas e
-        orçamento em um só lugar.
+      <SlideMessage>
+        O organograma deixa de ser apenas uma árvore: ao selecionar um Ministro ou Secretário, a
+        plataforma reúne as informações necessárias para a análise.
       </SlideMessage>
 
-      <div className="mt-6 surface-panel overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-white/80 px-4 py-3 md:px-5">
-          <div className="flex items-center gap-2">
-            <FileBarChart className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold text-navy">Organograma com detalhe lateral</span>
-          </div>
-          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-[10px] font-semibold text-primary">
-            <CheckCircle2 className="h-3 w-3" /> Capturas reais
-          </span>
+      <div className="mt-6 grid items-stretch gap-5 md:grid-cols-[0.82fr_1.18fr]">
+        <div className="grid grid-cols-2 gap-3 rounded-2xl border border-navy/10 bg-muted/45 p-4">
+          {DETAIL_IMAGES.map((image, index) => (
+            <figure key={image.src} className="flex min-w-0 flex-col items-center">
+              <div className="flex h-[360px] w-full items-start justify-center overflow-hidden rounded-xl border border-navy/10 bg-white p-2 shadow-sm">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className={`h-full w-auto origin-center rounded-lg object-contain ${
+                    index === 0 ? "scale-y-[1.06]" : ""
+                  }`}
+                />
+              </div>
+              <figcaption className="mt-2 text-center text-xs font-semibold text-navy">
+                {image.label}
+              </figcaption>
+            </figure>
+          ))}
         </div>
 
-        <div className="bg-muted/35 p-3 md:p-4">
-          <div className="flex items-center justify-center overflow-hidden rounded-xl border border-navy/12 bg-white p-2 shadow-sm">
-            <img
-              src={TREE_DETAIL_IMAGE}
-              alt="Organograma do Executivo Federal com painel lateral de detalhe aberto"
-              className="block h-auto max-h-[min(55vh,500px)] w-full max-w-[1662px] object-contain"
-            />
+        <div className="flex flex-col justify-center gap-3">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+            Inteligência no mesmo fluxo
+          </p>
+          <h2 className="text-2xl font-bold leading-tight text-navy">
+            Da posição na estrutura aos dados que orientam a decisão
+          </h2>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            A leitura combina identidade do gestor, cargo, projetos e valores. Na V2, esse mesmo
+            espaço passa a incorporar relacionamentos da Innovatis e orçamento do Ministério.
+          </p>
+          <div className="mt-1 grid gap-2">
+            {HIGHLIGHTS.map(({ icon: Icon, label }) => (
+              <div
+                key={label}
+                className="flex items-center gap-3 rounded-xl border border-primary/15 bg-primary/[0.05] px-4 py-3"
+              >
+                <Icon className="h-5 w-5 shrink-0 text-primary" />
+                <span className="text-sm font-semibold text-navy">{label}</span>
+              </div>
+            ))}
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 border-t border-border bg-white px-4 py-3 text-xs text-muted-foreground md:px-5">
-          <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
-          <span>
-            <strong className="font-semibold text-navy">Um único nó, uma visão consolidada:</strong>{" "}
-            o detalhe aprofunda a análise sem interromper a navegação.
-          </span>
         </div>
       </div>
     </div>

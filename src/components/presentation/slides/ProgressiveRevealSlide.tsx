@@ -1,24 +1,71 @@
-import { SlideTitle, SlideMessage, Accent } from "./primitives";
+import { CheckCircle2 } from "lucide-react";
+import { Accent, SlideMessage, SlideTitle } from "./primitives";
 
-const HIERARCHY_TREE_IMAGE = "/elementos_slides/arvore_hierarquica.webp";
+const STAGES = [
+  {
+    step: "01",
+    label: "Presidência",
+    description: "O ponto de partida da estrutura",
+    image: "/elementos_slides/presidente.png",
+    alt: "Plataforma exibindo apenas o nó da Presidência da República",
+  },
+  {
+    step: "02",
+    label: "Ministérios",
+    description: "Expansão do primeiro nível",
+    image: "/elementos_slides/ministros-arvore.png",
+    alt: "Plataforma com os Ministérios expandidos no organograma",
+  },
+  {
+    step: "03",
+    label: "Secretarias",
+    description: "Aprofundamento até os gestores",
+    image: "/elementos_slides/secretarios-arvore1.png",
+    alt: "Plataforma com as Secretarias expandidas no organograma",
+  },
+] as const;
 
 export function ProgressiveRevealSlide() {
   return (
     <div>
       <SlideTitle>
-        Revelação Progressiva: do <Accent>macro ao micro</Accent> através de cliques
+        A V1 transforma a estrutura pública em uma <Accent>jornada visual</Accent>
       </SlideTitle>
       <SlideMessage>
-        O usuário parte da visão geral do Governo Federal e aprofunda a navegação por cliques,
-        expandindo <Accent>Ministérios e Secretarias</Accent> conforme a necessidade.
+        A navegação começa no topo e revela novos níveis conforme o usuário precisa aprofundar a
+        análise.
       </SlideMessage>
 
-      <div className="mt-10 surface-panel p-4 md:p-6 flex items-center justify-center">
-        <img
-          src={HIERARCHY_TREE_IMAGE}
-          alt="Árvore hierárquica demonstrando revelação progressiva do macro ao micro"
-          className="w-full h-auto max-h-[min(60vh,520px)] object-contain"
-        />
+      <div className="mt-6 grid gap-3">
+        {STAGES.map((stage) => (
+          <article
+            key={stage.step}
+            className="surface-panel grid items-center gap-3 p-3 md:grid-cols-[150px_1fr]"
+          >
+            <div className="flex items-center gap-3 md:block">
+              <span className="text-xs font-bold tracking-[0.18em] text-primary">{stage.step}</span>
+              <div className="md:mt-1">
+                <h2 className="text-base font-bold text-navy">{stage.label}</h2>
+                <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
+                  {stage.description}
+                </p>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-lg border border-navy/10 bg-[#f8fbff]">
+              <img
+                src={stage.image}
+                alt={stage.alt}
+                className="block h-[94px] w-full object-cover object-center md:h-[100px]"
+              />
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+        <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+        <strong className="font-semibold text-navy">Capturas reais da plataforma:</strong>
+        uma leitura progressiva, da Presidência às Secretarias.
       </div>
     </div>
   );
