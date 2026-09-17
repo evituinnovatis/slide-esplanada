@@ -10,7 +10,7 @@ export function ProgressiveRevealSlide() {
       </SlideTitle>
       <SlideMessage>
         O usuário parte da visão geral do Governo Federal e aprofunda a navegação por cliques,
-        expandindo <Accent>Ministérios, Secretarias e gestores</Accent> conforme a necessidade.
+        expandindo <Accent>Ministérios e Secretarias</Accent> conforme a necessidade.
       </SlideMessage>
 
       <div className="mt-10 surface-panel p-4 md:p-6 flex items-center justify-center">
