@@ -39,6 +39,7 @@ describe("presentation narrative", () => {
     expect(html).toContain("/elementos_slides/presidente.png");
     expect(html).toContain("/elementos_slides/ministros-arvore.png");
     expect(html).toContain("/elementos_slides/secretarios-arvore1.png");
+    expect(html).toContain("pdf-stage-heading");
   });
 
   it("shows both readable detail-panel captures", () => {

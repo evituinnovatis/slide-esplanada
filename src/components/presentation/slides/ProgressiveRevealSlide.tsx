@@ -42,7 +42,7 @@ export function ProgressiveRevealSlide() {
             key={stage.step}
             className="surface-panel grid items-center gap-3 p-3 md:grid-cols-[150px_1fr]"
           >
-            <div className="flex items-center gap-3 md:block">
+            <div className="stage-heading-stack flex items-center gap-3 md:block">
               <span className="text-xs font-bold tracking-[0.18em] text-primary">{stage.step}</span>
               <div className="md:mt-1">
                 <h2 className="text-base font-bold text-navy">{stage.label}</h2>
@@ -50,6 +50,11 @@ export function ProgressiveRevealSlide() {
                   {stage.description}
                 </p>
               </div>
+            </div>
+            <div className="pdf-stage-heading" aria-hidden="true">
+              <span>{stage.step}</span>
+              <strong>{stage.label}</strong>
+              <span>— {stage.description}</span>
             </div>
             <div className="overflow-hidden rounded-lg border border-navy/10 bg-[#f8fbff]">
               <img

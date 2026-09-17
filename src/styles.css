@@ -184,6 +184,10 @@
   font-weight: 600;
 }
 
+.pdf-stage-heading {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .list-views-slide > h1 {
     max-width: none;
@@ -255,8 +259,8 @@
   /* The browser may use a narrower print viewport than the 1280px design canvas.
      Scale dense slides after their layout is calculated at the design width. */
   .print-slide-evolucao-organograma > .print-slide-content {
-    zoom: 0.9;
-    width: 111.111%;
+    zoom: 0.72;
+    width: 138.889%;
   }
 
   .print-slide-painel-detalhes > .print-slide-content {
@@ -359,11 +363,86 @@
 
   /* Keep the denser captures inside the printable 16:9 canvas. */
   .print-slide-evolucao-organograma > .print-slide-content > div > div.mt-6 {
-    margin-top: 0.75rem;
+    margin-top: 0.4rem;
+    gap: 0.4rem;
   }
 
   .print-slide-evolucao-organograma > .print-slide-content > div > div.mt-6 article {
     padding: 0.5rem;
+  }
+
+  .print-slide-evolucao-organograma > .print-slide-content > div > div.mt-6 article {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+    min-height: 0;
+  }
+
+  .print-slide-evolucao-organograma .stage-heading-stack {
+    display: none;
+  }
+
+  .print-slide-evolucao-organograma .pdf-stage-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-width: 0;
+    white-space: nowrap;
+    font-size: 0.72rem;
+    line-height: 1;
+  }
+
+  .print-slide-evolucao-organograma .pdf-stage-heading span:first-child {
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+  }
+
+  .print-slide-evolucao-organograma .pdf-stage-heading strong {
+    color: var(--navy);
+  }
+
+  .print-slide-evolucao-organograma .pdf-stage-heading span:last-child {
+    overflow: hidden;
+    color: var(--muted-foreground);
+    text-overflow: ellipsis;
+  }
+
+  .print-slide-evolucao-organograma
+    > .print-slide-content
+    > div
+    > div.mt-6
+    article
+    > div.overflow-hidden {
+    height: auto;
+    aspect-ratio: 5.255 / 1;
+    min-height: 0;
+  }
+
+  .print-slide-evolucao-organograma > .print-slide-content > div > div.mt-6 article img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top;
+  }
+
+  .print-slide-evolucao-organograma
+    > .print-slide-content
+    > div
+    > div.mt-6
+    article:first-child
+    > div.overflow-hidden {
+    aspect-ratio: 6.792 / 1;
+  }
+
+  .print-slide-evolucao-organograma
+    > .print-slide-content
+    > div
+    > div.mt-6
+    article:last-child
+    > div.overflow-hidden {
+    aspect-ratio: 4.896 / 1;
   }
 
   .print-slide-painel-detalhes > .print-slide-content > div.mt-6 {
