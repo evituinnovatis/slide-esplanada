@@ -1,208 +1,43 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { getOrCreateDefaultSession } from "@/lib/presentation/session";
-import { saveParticipant, signInPresenter } from "@/lib/presentation/auth";
-import { Presentation, Users, ArrowRight, Lock, Mail } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { SLIDES } from "@/lib/presentation/slides";
+import { SlideRenderer } from "@/components/presentation/SlideRenderer";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export const Route = createFileRoute("/")({
-  component: LoginPage,
-});
+export const Route = createFileRoute("/")({ component: PublicPresentationPage });
 
-function LoginPage() {
-  const navigate = useNavigate();
-  const [mode, setMode] = useState<null | "presenter" | "viewer">(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+function PublicPresentationPage() {
+  const [slideIndex, setSlideIndex] = useState(0);
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      if (mode === "presenter") {
-        if (!email.trim()) {
-          setError("Informe seu e-mail.");
-          return;
-        }
-        if (!password) {
-          setError("Informe sua senha.");
-          return;
-        }
-
-        await signInPresenter(email.trim(), password);
-        navigate({ to: "/presenter" });
-        return;
-      }
-
-      if (!name.trim()) {
-        setError("Informe seu nome.");
-        return;
-      }
-
-      const session = await getOrCreateDefaultSession();
-      const { data, error: insErr } = await supabase
-        .from("participants")
-        .insert({ session_id: session.id, name: name.trim(), role: "viewer" })
-        .select("*")
-        .single();
-      if (insErr) throw insErr;
-
-      saveParticipant({
-        id: data.id,
-        name: data.name,
-        role: "viewer",
-        sessionId: session.id,
-      });
-      navigate({ to: "/viewer" });
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Erro ao entrar.";
-      setError(message);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "ArrowRight") setSlideIndex((index) => Math.min(index + 1, SLIDES.length - 1));
+      if (event.key === "ArrowLeft") setSlideIndex((index) => Math.max(index - 1, 0));
     }
-  }
-
-  function resetForm() {
-    setMode(null);
-    setError(null);
-    setPassword("");
-    setEmail("");
-    setName("");
-  }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-app-gradient flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-4xl">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs uppercase tracking-widest text-primary">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            Innovatis · Apresentação Executiva
-          </div>
-          <h1 className="mt-6 text-5xl md:text-6xl font-bold tracking-tight">
-            Esplanada <span className="text-primary">4.0</span>
-          </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Apresentação interativa da nova plataforma estratégica da Innovatis.
-          </p>
+    <div className="min-h-screen bg-app-gradient flex flex-col">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-border/60">
+        <span className="text-sm font-semibold">Esplanada 4.0</span>
+        <span className="text-xs text-muted-foreground">{slideIndex + 1}/{SLIDES.length}</span>
+      </header>
+      <main className="flex-1 flex items-center px-6 py-10 lg:px-14">
+        <SlideRenderer slideIndex={slideIndex} />
+      </main>
+      <footer className="flex items-center justify-between px-6 py-4 border-t border-border/60">
+        <button type="button" onClick={() => setSlideIndex((index) => Math.max(index - 1, 0))} disabled={slideIndex === 0} className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm disabled:opacity-40">
+          <ChevronLeft className="h-4 w-4" /> Anterior
+        </button>
+        <div className="flex gap-1">
+          {SLIDES.map((slide, index) => <button key={slide.id} type="button" aria-label={`Ir para o slide ${index + 1}`} onClick={() => setSlideIndex(index)} className={`h-1.5 rounded-full transition-all ${index === slideIndex ? "w-8 bg-primary" : "w-3 bg-navy/20"}`} />)}
         </div>
-
-        {!mode && (
-          <div className="grid md:grid-cols-2 gap-6">
-            <button
-              onClick={() => setMode("presenter")}
-              className="group surface-panel p-8 text-left transition hover:border-primary/50 hover:green-glow"
-            >
-              <Presentation className="h-10 w-10 text-primary" />
-              <h2 className="mt-6 text-2xl font-semibold">Entrar como Apresentador</h2>
-              <p className="mt-2 text-muted-foreground">
-                Controle os slides, abra votações e acompanhe métricas em tempo real.
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-primary font-medium">
-                Continuar <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition" />
-              </span>
-            </button>
-            <button
-              onClick={() => setMode("viewer")}
-              className="group surface-panel p-8 text-left transition hover:border-primary/50 hover:green-glow"
-            >
-              <Users className="h-10 w-10 text-primary" />
-              <h2 className="mt-6 text-2xl font-semibold">Entrar como Espectador</h2>
-              <p className="mt-2 text-muted-foreground">
-                Acompanhe a apresentação em tempo real e participe da votação.
-              </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-primary font-medium">
-                Continuar <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition" />
-              </span>
-            </button>
-          </div>
-        )}
-
-        {mode && (
-          <form onSubmit={submit} className="surface-panel p-8 max-w-md mx-auto animate-slide-in">
-            <div className="flex items-center gap-3 mb-6">
-              {mode === "presenter" ? (
-                <Presentation className="h-6 w-6 text-primary" />
-              ) : (
-                <Users className="h-6 w-6 text-primary" />
-              )}
-              <h2 className="text-2xl font-semibold">
-                {mode === "presenter" ? "Apresentador" : "Espectador"}
-              </h2>
-            </div>
-
-            {mode === "presenter" ? (
-              <>
-                <label className="block text-sm text-muted-foreground mb-2">
-                  <Mail className="inline h-3 w-3 mr-1" /> E-mail
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tech@innovatismc.com"
-                  autoComplete="email"
-                  className="w-full rounded-md bg-input border border-border px-4 py-3 outline-none focus:border-primary transition"
-                  autoFocus
-                />
-
-                <label className="block text-sm text-muted-foreground mb-2 mt-4">
-                  <Lock className="inline h-3 w-3 mr-1" /> Senha
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Senha"
-                  autoComplete="current-password"
-                  className="w-full rounded-md bg-input border border-border px-4 py-3 outline-none focus:border-primary transition"
-                />
-              </>
-            ) : (
-              <>
-                <label className="block text-sm text-muted-foreground mb-2">Seu nome</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Nome completo"
-                  className="w-full rounded-md bg-input border border-border px-4 py-3 outline-none focus:border-primary transition"
-                  autoFocus
-                />
-              </>
-            )}
-
-            {error && (
-              <p className="mt-4 text-sm text-destructive">{error}</p>
-            )}
-
-            <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                onClick={resetForm}
-                className="rounded-md border border-border px-4 py-3 text-sm hover:bg-muted transition"
-              >
-                Voltar
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 rounded-md bg-primary text-primary-foreground font-semibold px-4 py-3 hover:opacity-90 disabled:opacity-50 transition"
-              >
-                {loading ? "Entrando..." : "Entrar"}
-              </button>
-            </div>
-          </form>
-        )}
-
-        <p className="text-center text-xs text-muted-foreground mt-10">
-          MVP demonstrativo · Sessão: Apresentação Esplanada 4.0
-        </p>
-      </div>
+        <button type="button" onClick={() => setSlideIndex((index) => Math.min(index + 1, SLIDES.length - 1))} disabled={slideIndex === SLIDES.length - 1} className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40">
+          Próximo <ChevronRight className="h-4 w-4" />
+        </button>
+      </footer>
     </div>
   );
 }
