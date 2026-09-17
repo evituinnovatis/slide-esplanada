@@ -10,13 +10,11 @@ import { OrgTreeSlide } from "@/components/presentation/slides/OrgTreeSlide";
 import { MinistryPortfolioSlide } from "@/components/presentation/slides/MinistryPortfolioSlide";
 import { FeaturesSlide } from "@/components/presentation/slides/FeaturesSlide";
 import { NavigationSlide } from "@/components/presentation/slides/NavigationSlide";
-import { VotingSlide } from "@/components/presentation/slides/VotingSlide";
-import { ResultsSlide } from "@/components/presentation/slides/ResultsSlide";
 import { ArchitectureSlide } from "@/components/presentation/slides/ArchitectureSlide";
 import { ClosingSlide } from "@/components/presentation/slides/ClosingSlide";
 import { NextIntegrationsSlide } from "@/components/presentation/slides/NextIntegrationsSlide";
 
-export type SlideKind = "content" | "voting" | "results";
+export type SlideKind = "content";
 
 /**
  * Each slide is a standalone React component. This manifest only defines the
@@ -40,6 +38,3 @@ export const SLIDES: SlideDef[] = [
   /*{ id: "visao-por-ministerio", kind: "content", Component: MinistryPortfolioSlide },*/
   { id: "encerramento", kind: "content", Component: ClosingSlide },
 ];
-
-export const VOTING_SLIDE_INDEX = SLIDES.findIndex((s) => s.kind === "voting");
-export const RESULTS_SLIDE_INDEX = SLIDES.findIndex((s) => s.kind === "results");

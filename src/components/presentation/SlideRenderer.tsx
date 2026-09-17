@@ -1,16 +1,8 @@
-import { SLIDES, VOTING_SLIDE_INDEX, RESULTS_SLIDE_INDEX } from "@/lib/presentation/slides";
-import type { LayoutOptionId } from "@/lib/presentation/layout-options";
-import type { VoteRow } from "@/lib/presentation/realtime";
+import { SLIDES } from "@/lib/presentation/slides";
 
 interface SlideRendererProps {
   slideIndex: number;
-  votingOpen: boolean;
-  votes: VoteRow[];
-  viewMode: "presenter" | "viewer";
-  myVoteOptionId?: string | null;
-  onVote?: (optionId: LayoutOptionId) => void;
 }
-
 export function SlideRenderer({ slideIndex, ...slideProps }: SlideRendererProps) {
   const slide = SLIDES[slideIndex] ?? SLIDES[0];
   const SlideComponent = slide.Component;
@@ -25,4 +17,3 @@ export function SlideRenderer({ slideIndex, ...slideProps }: SlideRendererProps)
   );
 }
 
-export { VOTING_SLIDE_INDEX, RESULTS_SLIDE_INDEX };
